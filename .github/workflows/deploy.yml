@@ -1,0 +1,43 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checa o repositório
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Configura o Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22'
+
+      # Instala dependências
+      - name: Install dependencies
+        run: npm install --only=production
+
+      # Define as variáveis de ambiente a partir do GitHub Secrets
+      - name: Set environment variables
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+
+      # Compila o TypeScript
+      - name: Compile TypeScript
+        run: npm run build
+
+      # Faz o deploy para o GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          user_name: 'GitHub Actions'
+          user_email: 'actions@github.com'

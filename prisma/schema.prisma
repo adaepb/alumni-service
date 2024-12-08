@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model colegios {
+  id                Int                 @id @default(autoincrement())
+  nomecolegio       String              @db.VarChar(255)
+  nrcolegio         String              @unique @db.VarChar(50)
+  email             String?             @db.VarChar(255)
+  situacao          String              @db.VarChar(20)
+  cidade            String?             @db.VarChar(100)
+  dtfundacao        DateTime?           @db.Date
+  dtinstalacao      DateTime?           @db.Date
+  brasaocolegio     String?
+  gestoes_colegios  gestoes_colegios[]
+  senioresregulares senioresregulares[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model finance_categorias {
+  id                    Int                     @id @default(autoincrement())
+  categoria             String                  @db.VarChar(100)
+  tipo                  String                  @db.VarChar(8)
+  codigo                String?                 @unique(map: "finance_categorias_codigo_idx") @db.VarChar
+  finance_subcategorias finance_subcategorias[]
+}
+
+model finance_subcategorias {
+  id                 Int                @id @default(autoincrement())
+  descricao          String             @db.VarChar(150)
+  idcategoria        String             @db.VarChar
+  finance_categorias finance_categorias @relation(fields: [idcategoria], references: [codigo], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model gestoes_alumni {
+  id                                                               Int                @id @default(autoincrement())
+  anoiniciogestao                                                  Int
+  anofimgestao                                                     Int?
+  lema                                                             String             @db.VarChar(100)
+  idpresidente                                                     Int?
+  idvice                                                           Int?
+  idsecg                                                           Int?
+  idtesg                                                           Int?
+  idsecgadj                                                        Int?
+  idtesadj                                                         Int?
+  idsecasso                                                        Int?
+  idsecassoadj                                                     Int?
+  senioresregulares_gestoes_alumni_idpresidenteTosenioresregulares senioresregulares? @relation("gestoes_alumni_idpresidenteTosenioresregulares", fields: [idpresidente], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  senioresregulares_gestoes_alumni_idsecassoTosenioresregulares    senioresregulares? @relation("gestoes_alumni_idsecassoTosenioresregulares", fields: [idsecasso], references: [id], onUpdate: NoAction)
+  senioresregulares_gestoes_alumni_idsecassoadjTosenioresregulares senioresregulares? @relation("gestoes_alumni_idsecassoadjTosenioresregulares", fields: [idsecassoadj], references: [id], onUpdate: NoAction)
+  senioresregulares_gestoes_alumni_idsecgTosenioresregulares       senioresregulares? @relation("gestoes_alumni_idsecgTosenioresregulares", fields: [idsecg], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  senioresregulares_gestoes_alumni_idsecgadjTosenioresregulares    senioresregulares? @relation("gestoes_alumni_idsecgadjTosenioresregulares", fields: [idsecgadj], references: [id], onUpdate: NoAction)
+  senioresregulares_gestoes_alumni_idtesadjTosenioresregulares     senioresregulares? @relation("gestoes_alumni_idtesadjTosenioresregulares", fields: [idtesadj], references: [id], onUpdate: NoAction)
+  senioresregulares_gestoes_alumni_idtesgTosenioresregulares       senioresregulares? @relation("gestoes_alumni_idtesgTosenioresregulares", fields: [idtesg], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  senioresregulares_gestoes_alumni_idviceTosenioresregulares       senioresregulares? @relation("gestoes_alumni_idviceTosenioresregulares", fields: [idvice], references: [id], onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model gestoes_colegios {
+  id                                                                 Int                @id @default(autoincrement())
+  anoiniciogestao                                                    Int
+  anofimgestao                                                       Int?
+  pacotesisdm                                                        String?            @db.VarChar(255)
+  id_colegio                                                         String             @db.VarChar(50)
+  idpresidente                                                       Int
+  idvice                                                             Int?
+  idsecg                                                             Int
+  idtesg                                                             Int
+  idsecgadj                                                          Int?
+  idtesadj                                                           Int?
+  idsecasso                                                          Int?
+  idsecassoadj                                                       Int?
+  colegios                                                           colegios           @relation(fields: [id_colegio], references: [nrcolegio], onDelete: Cascade, onUpdate: NoAction)
+  senioresregulares_gestoes_colegios_idpresidenteTosenioresregulares senioresregulares  @relation("gestoes_colegios_idpresidenteTosenioresregulares", fields: [idpresidente], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  senioresregulares_gestoes_colegios_idsecassoTosenioresregulares    senioresregulares? @relation("gestoes_colegios_idsecassoTosenioresregulares", fields: [idsecasso], references: [id], onUpdate: NoAction)
+  senioresregulares_gestoes_colegios_idsecassoadjTosenioresregulares senioresregulares? @relation("gestoes_colegios_idsecassoadjTosenioresregulares", fields: [idsecassoadj], references: [id], onUpdate: NoAction)
+  senioresregulares_gestoes_colegios_idsecgTosenioresregulares       senioresregulares  @relation("gestoes_colegios_idsecgTosenioresregulares", fields: [idsecg], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  senioresregulares_gestoes_colegios_idsecgadjTosenioresregulares    senioresregulares? @relation("gestoes_colegios_idsecgadjTosenioresregulares", fields: [idsecgadj], references: [id], onUpdate: NoAction)
+  senioresregulares_gestoes_colegios_idtesadjTosenioresregulares     senioresregulares? @relation("gestoes_colegios_idtesadjTosenioresregulares", fields: [idtesadj], references: [id], onUpdate: NoAction)
+  senioresregulares_gestoes_colegios_idtesgTosenioresregulares       senioresregulares  @relation("gestoes_colegios_idtesgTosenioresregulares", fields: [idtesg], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  senioresregulares_gestoes_colegios_idviceTosenioresregulares       senioresregulares? @relation("gestoes_colegios_idviceTosenioresregulares", fields: [idvice], references: [id], onUpdate: NoAction)
+
+  @@index([id_colegio], map: "idx_colegio_nrcolegio")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model senioresregulares {
+  id                                                                Int                @id @default(autoincrement())
+  nomesenior                                                        String             @db.VarChar(255)
+  dtnascimento                                                      DateTime           @db.Date
+  condicao                                                          String             @db.VarChar(20)
+  email                                                             String?            @db.VarChar(255)
+  celular                                                           String?            @db.VarChar(20)
+  id_colegio                                                        String             @db.VarChar(50)
+  cidade                                                            String?            @db.VarChar(100)
+  instagram                                                         String?            @db.VarChar(100)
+  linkedin                                                          String?            @db.VarChar(100)
+  potenciamaconica                                                  String             @db.VarChar(20)
+  gestoes_alumni_gestoes_alumni_idpresidenteTosenioresregulares     gestoes_alumni[]   @relation("gestoes_alumni_idpresidenteTosenioresregulares")
+  gestoes_alumni_gestoes_alumni_idsecassoTosenioresregulares        gestoes_alumni[]   @relation("gestoes_alumni_idsecassoTosenioresregulares")
+  gestoes_alumni_gestoes_alumni_idsecassoadjTosenioresregulares     gestoes_alumni[]   @relation("gestoes_alumni_idsecassoadjTosenioresregulares")
+  gestoes_alumni_gestoes_alumni_idsecgTosenioresregulares           gestoes_alumni[]   @relation("gestoes_alumni_idsecgTosenioresregulares")
+  gestoes_alumni_gestoes_alumni_idsecgadjTosenioresregulares        gestoes_alumni[]   @relation("gestoes_alumni_idsecgadjTosenioresregulares")
+  gestoes_alumni_gestoes_alumni_idtesadjTosenioresregulares         gestoes_alumni[]   @relation("gestoes_alumni_idtesadjTosenioresregulares")
+  gestoes_alumni_gestoes_alumni_idtesgTosenioresregulares           gestoes_alumni[]   @relation("gestoes_alumni_idtesgTosenioresregulares")
+  gestoes_alumni_gestoes_alumni_idviceTosenioresregulares           gestoes_alumni[]   @relation("gestoes_alumni_idviceTosenioresregulares")
+  gestoes_colegios_gestoes_colegios_idpresidenteTosenioresregulares gestoes_colegios[] @relation("gestoes_colegios_idpresidenteTosenioresregulares")
+  gestoes_colegios_gestoes_colegios_idsecassoTosenioresregulares    gestoes_colegios[] @relation("gestoes_colegios_idsecassoTosenioresregulares")
+  gestoes_colegios_gestoes_colegios_idsecassoadjTosenioresregulares gestoes_colegios[] @relation("gestoes_colegios_idsecassoadjTosenioresregulares")
+  gestoes_colegios_gestoes_colegios_idsecgTosenioresregulares       gestoes_colegios[] @relation("gestoes_colegios_idsecgTosenioresregulares")
+  gestoes_colegios_gestoes_colegios_idsecgadjTosenioresregulares    gestoes_colegios[] @relation("gestoes_colegios_idsecgadjTosenioresregulares")
+  gestoes_colegios_gestoes_colegios_idtesadjTosenioresregulares     gestoes_colegios[] @relation("gestoes_colegios_idtesadjTosenioresregulares")
+  gestoes_colegios_gestoes_colegios_idtesgTosenioresregulares       gestoes_colegios[] @relation("gestoes_colegios_idtesgTosenioresregulares")
+  gestoes_colegios_gestoes_colegios_idviceTosenioresregulares       gestoes_colegios[] @relation("gestoes_colegios_idviceTosenioresregulares")
+  colegios                                                          colegios           @relation(fields: [id_colegio], references: [nrcolegio], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([id_colegio], map: "idx_senior_colegio")
+}
