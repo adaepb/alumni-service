@@ -18,11 +18,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18'  # Atualize para uma versão LTS estável
+          node-version: '18'
 
-      # Instala todas as dependências (de produção e desenvolvimento)
+      # Instala todas as dependências
       - name: Install dependencies
-        run: npm install  # Removido '--only=production' para garantir que todas as dependências sejam instaladas
+        run: npm install
 
       # Define as variáveis de ambiente a partir do GitHub Secrets
       - name: Set environment variables
@@ -34,17 +34,19 @@ jobs:
         run: npm run build
 
       # Verifica se o diretório public foi gerado
-      - name: Verify public directory exists
+      - name: Show build output
+        run: ls -l ./public
+
+      # Adiciona depuração para verificar a estrutura do diretório
+      - name: List directory structure
         run: |
-          if [ ! -d "./public" ]; then
-            echo "Public directory does not exist. Exiting...";
-            exit 1;
-          fi
+          echo "Directory structure:"
+          ls -R
 
       # Faz o deploy para o GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          publish_dir: ./public  # Certifique-se de que o diretório 'public' contém os arquivos que você quer hospedar
+          publish_dir: ./public
           user_name: 'GitHub Actions'
           user_email: 'actions@github.com'
