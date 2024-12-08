@@ -18,11 +18,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '22'
+          node-version: '18'  # Atualize para uma versão LTS estável
 
-      # Instala dependências
+      # Instala todas as dependências (de produção e desenvolvimento)
       - name: Install dependencies
-        run: npm install --only=production
+        run: npm install  # Removido '--only=production' para garantir que todas as dependências sejam instaladas
 
       # Define as variáveis de ambiente a partir do GitHub Secrets
       - name: Set environment variables
@@ -33,11 +33,18 @@ jobs:
       - name: Compile TypeScript
         run: npm run build
 
+      # Verifica se o diretório public foi gerado
+      - name: Verify public directory exists
+        run: |
+          if [ ! -d "./public" ]; then
+            echo "Public directory does not exist. Exiting...";
+            exit 1;
+          fi
+
       # Faz o deploy para o GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          publish_dir: ./public  # Certifique-se de que o diretório 'public' contém os arquivos que você quer hospedar
           user_name: 'GitHub Actions'
           user_email: 'actions@github.com'
