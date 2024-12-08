@@ -51,3 +51,10 @@ jobs:
           publish_dir: ./public
           user_name: 'GitHub Actions'
           user_email: 'actions@github.com'
+
+      # Mostra a URL do serviço no GitHub Pages
+      - name: Show GitHub Pages URL
+        run: |
+          REPO_OWNER=$(echo "${{ github.repository }}" | cut -d'/' -f1)
+          REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+          echo "O serviço está rodando em: https://${REPO_OWNER}.github.io/${REPO_NAME}/"
